@@ -1,6 +1,7 @@
 h1{
     background-color: green;
     text-align: center;
+    
 }
 .dropdown a{
     display:block;
@@ -17,21 +18,29 @@ h1{
 }
 .dropdown:hover .units{
     display:block;
+    /*This makes is so that when u hover over the button it drops down */
 }
 body{
     display:flex;
     flex-direction:column;
+    height: 100vh;
+    /*The height:100vh; makes the html take up the whole page */
     
-}
-.under_title{
-    display:flex;
-}
-.allNotitle{
-    display:flex;
-    flex-flow: wrap;
-    justify-content: space-around;
 }
 
-.pollutants{
+.allNotitle{
+    display:flex;
+
+    justify-content: space-around;
+    margin-bottom: auto;
+    align-items:center;
     
 }
+
+.bottom{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    
+}
+
