@@ -63,7 +63,7 @@ body{
 
 .bottom{
     display:flex;
-    justify-content:center;
+    justify-content:space-between;
     align-items:center;
     
 }
@@ -73,4 +73,15 @@ body{
 }
 .dates{
 text-align: center;;
+}
+a{
+    text-decoration: none;
+}
+.left-links{
+    display:flex;
+    gap:15px;
+}
+.right-links{
+    display:flex;
+    gap:15px;
 }
