@@ -3,22 +3,46 @@ h1{
     text-align: center;
     
 }
+img{
+    width:100px;
+    height:100px;
+    margin:auto;
+}
+.dropdown{
+    display:inline-block;
+}
+.dropdown button{
+    background-color: hsl(0,0%,80%);
+    color:white;
+    padding:10px 15px;
+    border:none;
+    cursor:pointer;
+}
 .dropdown a{
     display:block;
     color:black;
     text-decoration: none;
     padding:10px 15px;
+    
 }
 .dropdown .units{
     display:none;
-    background: white;
+    background-color: hsl(0,0%,95%);
     position:absolute;
     min-width: 100px;
-    box-shadow: 2px 2px 5px black;
+    box-shadow: 2px 2px 5px hsla(0,0%,0%,0.8);
+    
 }
 .dropdown:hover .units{
     display:block;
+    
     /*This makes is so that when u hover over the button it drops down */
+}
+.dropdown:hover button{
+    background-color: hsl(0,0%,70%);
+}
+.dropdown a:hover{
+background-color: hsl(0,0%,90%);
 }
 body{
     display:flex;
@@ -43,6 +67,10 @@ body{
     align-items:center;
     
 }
-.pollutants p{
-    text-align: center;;
+
+.pollutants{
+    text-align: center;
+}
+.dates{
+text-align: center;;
 }
