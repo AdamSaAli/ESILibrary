@@ -3,8 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <title>User gui</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <h1>Ecosystem Informatics Inc</h1>
+    <form>
+    <div class="dropdown">
+        <button class="button">Select a unit</button>
+        <div class="units">
+            <a href="#">Option 1</a>
+            <a href="#">Option 2</a>
+            <a href="#">Option 3</a>
+        </div>
+    </div>
+    <!---The links are just placeholders for now-->
+    <label for="pollutants">Chose a pollutant</label>
+    <select name="pollutants" id="gases">
+        <option value="PM">PM</option>
+        <option value="Gas">Gas</option>
+    </select>
+    <label>
+        From
+        <input type="date">
+        To
+        <input type="date">
+    </label>
+        <input type="submit" value="Submit">
+        </form>
+    
+        <input type="submit" value="Submit">
 </body>
 </html>
