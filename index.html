@@ -7,7 +7,8 @@
 </head>
 <body>
     <h1>Ecosystem Informatics Inc</h1>
-    <form>
+    
+    <div class="allNotitle">
     <div class="dropdown">
         <button class="button">Select a unit</button>
         <div class="units">
@@ -17,20 +18,26 @@
         </div>
     </div>
     <!---The links are just placeholders for now-->
+    <div class="pollutants">
     <label for="pollutants">Chose a pollutant</label>
     <select name="pollutants" id="gases">
         <option value="PM">PM</option>
         <option value="Gas">Gas</option>
     </select>
+</div>
+<div>
     <label>
         From
         <input type="date">
         To
         <input type="date">
     </label>
-        <input type="submit" value="Submit">
-        </form>
+</div>
+</div>
+        <input type="submit" value="Submit" class="bottom">
+        
     
-        <input type="submit" value="Submit">
+        
+    
 </body>
 </html>

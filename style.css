@@ -18,3 +18,20 @@ h1{
 .dropdown:hover .units{
     display:block;
 }
+body{
+    display:flex;
+    flex-direction:column;
+    
+}
+.under_title{
+    display:flex;
+}
+.allNotitle{
+    display:flex;
+    flex-flow: wrap;
+    justify-content: space-around;
+}
+
+.pollutants{
+    
+}
