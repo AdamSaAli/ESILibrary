@@ -11,53 +11,59 @@
    
     <div class="allNotitle">
     <div class="dropdown">
-        <button>Select a unit</button>
+        <button id="btn">Select a unit</button>
         <div class="units">
             <a href="#">Option 1</a>
             <a href="#">Option 2</a>
             <a href="#">Option 3</a>
         </div>
     </div>
+    <!---I need to not only print the chosen unit onto the screen but also make that become the title instead of "select unit" -->
     <!---The links are just placeholders for now-->
     <div class="pollutants">
     <p>Select which pollutant you would like to see</p>
-    <input type="radio" id="pm10" name="pollutant" value="PM10">
+    <input type="checkbox" id="pm10" name="pollutant" value="PM10">
     <label for="pm10">PM10</label>
-    <input type="radio" id="pm2.5" name="pollutant" value="PM2.5">
+    <input type="checkbox" id="pm2.5" name="pollutant" value="PM2.5">
     <label for="PM1">PM2.5</label>
-    <input type="radio" id="no2" name="pollutant" value="NO2">
+    <input type="checkbox" id="no2" name="pollutant" value="NO2">
     <label for="no2">NO2</label>
-    <input type="radio" id="co2" name="pollutant" value="CO2">
+    <input type="checkbox" id="co2" name="pollutant" value="CO2">
     <label for="c02">CO2</label>
-    <input type="radio" id="s02" name="pollutant" value="SO2">
+    <input type="checkbox" id="s02" name="pollutant" value="SO2">
     <label for="s02">S02</label>
-    <input type="radio" id="nh3" name="pollutant" value="NH3">
+    <input type="checkbox" id="nh3" name="pollutant" value="NH3">
     <label for="nh3">NH3</label>
-    <input type="radio" id="03" name="pollutant" value="O3">
+    <input type="checkbox" id="03" name="pollutant" value="O3">
     <label for="O3">O3</label>
-    <input type="radio" id="h2s" name="pollutant" value="H2S">
+    <input type="checkbox" id="h2s" name="pollutant" value="H2S">
     <label for="h2s">H2S</label>
-    <input type="radio" id="ch4" name="pollutant" value="CH4">
+    <input type="checkbox" id="ch4" name="pollutant" value="CH4">
     <label for="ch4">CH4</label>
-    <input type="radio" id="co" name="pollutant" value="CO">
+    <input type="checkbox" id="co" name="pollutant" value="CO">
     <label for="co">CO</label>
-    <input type="radio" id="voc" name="pollutant" value="VOC">
+    <input type="checkbox" id="voc" name="pollutant" value="VOC">
     <label for="voc">VOCs</label>
     <!---Maybe I should include some line breaks-->
-
 </div>
 <div class="dates">
     <label>
         <p>Input the date you want the data from</p>
         From
-        <input type="date">
+        <input type="date" value="2021-01-01" min="2021-01-01">
+        <!--I should set the max time to be the current date-->
         To
         <input type="date">
+        <!---set the current date for the "To"-->
+        <!---Do  I need to add the time aswell?-->
     </label>
     
 </div>
 </div>
-<img src="https://ecosinfo.ca/wp-content/uploads/2022/01/Trans_FinalLogoB.png" alt="Ecosystem Informatics logo">
+<div class="mid">
+
+</div>
+<!--<img src="https://ecosinfo.ca/wp-content/uploads/2022/01/Trans_FinalLogoB.png" alt="Ecosystem Informatics logo">-->
 <div class="bottom">
         
         <div class="left-links">
@@ -70,8 +76,5 @@
         <a href="https://ecosinfo.ca/platform/" target="_blank" rel="noopener noreferrer">Technology</a>
     </div>
     </div>
-    
-        
-    
 </body>
 </html>
