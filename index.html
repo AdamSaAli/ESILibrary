@@ -20,6 +20,7 @@
     </div>
     <!---I need to not only print the chosen unit onto the screen but also make that become the title instead of "select unit" -->
     <!---The links are just placeholders for now-->
+    <form id="frm">
     <div class="pollutants">
     <p>Select which pollutant you would like to see</p>
     <input type="checkbox" id="pm10" name="pollutant" value="PM10">
@@ -45,7 +46,10 @@
     <input type="checkbox" id="voc" name="pollutant" value="VOC">
     <label for="voc">VOCs</label>
     <!---Maybe I should include some line breaks-->
+    
 </div>
+<button id="btn">Click to submit your gas selection</button>
+</form>
 <div class="dates">
     <label>
         <p>Input the date you want the data from</p>
@@ -61,7 +65,8 @@
 </div>
 </div>
 <div class="mid">
-
+<div class="display-unit"></div>
+<div class="display-pollutants"></div>
 </div>
 <!--<img src="https://ecosinfo.ca/wp-content/uploads/2022/01/Trans_FinalLogoB.png" alt="Ecosystem Informatics logo">-->
 <div class="bottom">

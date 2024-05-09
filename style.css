@@ -70,11 +70,13 @@ body{
     justify-content:space-between;
     align-items:center;
     margin-bottom:0;
-    padding:10px;
+   padding:10px;
+   
 }
 
 .pollutants{
     text-align: center;
+    
 }
 .dates{
 text-align: center;;
@@ -93,4 +95,26 @@ a{
 p{
     font-family: 'Courier New', Courier, monospace;
     font-size:15px;
+}
+
+.mid{
+    margin:auto;
+    display:flex
+    
+}
+.display-unit{
+    display:flex;
+    flex-wrap:wrap;
+    padding:10px;
+}
+.display-pollutants{
+    display:flex;
+    gap:10px;
+    flex-wrap: wrap;
+    flex-grow:1;
+    padding:10px;
+}
+#frm{
+    text-align: center;
+
 }
