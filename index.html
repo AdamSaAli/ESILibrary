@@ -10,14 +10,13 @@
     <h1>Ecosystem Informatics Inc</h1>
    
     <div class="allNotitle">
-    <div class="dropdown">
-        <button id="btn">Select a unit</button>
-        <div class="units">
-            <a href="#">Option 1</a>
-            <a href="#">Option 2</a>
-            <a href="#">Option 3</a>
-        </div>
-    </div>
+        <label for="units">Select a unit
+    <select name="units" id="units">
+        <option value="option 1">Option 1</option>
+        <option value="option 2">Option 2</option>
+        <option value="option 3">Option 3</option>
+    </select>
+</label>
     <!---I need to not only print the chosen unit onto the screen but also make that become the title instead of "select unit" -->
     <!---The links are just placeholders for now-->
     <form id="frm">
@@ -48,7 +47,7 @@
     <!---Maybe I should include some line breaks-->
     
 </div>
-<button id="btn">Click to submit your gas selection</button>
+<button id="btn">Click to submit your pollutant selection</button>
 </form>
 <div class="dates">
     <label>
