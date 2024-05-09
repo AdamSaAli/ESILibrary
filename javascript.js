@@ -15,21 +15,22 @@ unit.addEventListener("click",()=>{
 })
 
 const fo = document.querySelector('#frm')
-let values = []
+
 fo.addEventListener('submit',function(e){
+    let values = []
     e.preventDefault();
     const disp = document.createElement('span')
     let checke = document.getElementsByName('pollutant');
     for(let i=0;i<checke.length;i++){
         if(checke[i].checked==true){
             values.push(checke[i].value)
-            const disp = document.createElement('span')
-            disp.textContent = "The pollutants you have chosen are: " + values.toString()
-            const va = document.querySelector('.display-pollutants')
-            va.appendChild(disp)
-
         }
+        
     }
+    
+    disp.textContent = "The pollutants you have chosen are: " + values.toString()
+    const va = document.querySelector('.display-pollutants')
+    va.appendChild(disp)
 })
 // pollutants.addEventListener("change",()=>{
 //     //I used change here because click doesnt work for checkboxes
