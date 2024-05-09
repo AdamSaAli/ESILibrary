@@ -17,7 +17,10 @@ unit.addEventListener("click",()=>{
 const fo = document.querySelector('#frm')
 
 fo.addEventListener('submit',function(e){
+    const va = document.querySelector('.display-pollutants')
+    va.innerHTML="";
     let values = []
+
     e.preventDefault();
     const disp = document.createElement('span')
     let checke = document.getElementsByName('pollutant');
@@ -29,8 +32,9 @@ fo.addEventListener('submit',function(e){
     }
     
     disp.textContent = "The pollutants you have chosen are: " + values.toString()
-    const va = document.querySelector('.display-pollutants')
+    
     va.appendChild(disp)
+   
 })
 // pollutants.addEventListener("change",()=>{
 //     //I used change here because click doesnt work for checkboxes
