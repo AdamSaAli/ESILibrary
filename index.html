@@ -10,13 +10,16 @@
     <h1>Ecosystem Informatics Inc</h1>
    
     <div class="allNotitle">
-        <label for="units">Select a unit
+        <form id="optionform">
+        <label for="units" id="lab">Select a unit
     <select name="units" id="units">
         <option value="option 1">Option 1</option>
         <option value="option 2">Option 2</option>
         <option value="option 3">Option 3</option>
     </select>
 </label>
+<button id="btn">Click to submit your pollutant selection</button>
+</form>
     <!---I need to not only print the chosen unit onto the screen but also make that become the title instead of "select unit" -->
     <!---The links are just placeholders for now-->
     <form id="frm">
@@ -49,19 +52,23 @@
 </div>
 <button id="btn">Click to submit your pollutant selection</button>
 </form>
+<form id="lastform">
 <div class="dates">
-    <label>
-        <p>Input the date you want the data from</p>
-        From
+    <p>Input the date you want from</p>
+        <label>From</label>
+        
         <input type="date" value="2021-01-01" min="2021-01-01">
         <!--I should set the max time to be the current date-->
-        To
+        <label>To</label>
         <input type="date">
         <!---set the current date for the "To"-->
         <!---Do  I need to add the time aswell?-->
-    </label>
+    
+    
     
 </div>
+<button id="datebtn">Are you sure about the date</button>
+</form>
 </div>
 <div class="mid">
 <div class="display-unit"></div>
