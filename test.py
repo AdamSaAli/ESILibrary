@@ -1,6 +1,6 @@
 import pandas as pd
 import pydeck as pdk
-
+import numpy as np
 def generate_coldest_days_html(df):
     # Filter the DataFrame to include only clean NO2 gas data
     df = df[(df['clean_points_flag'] == True) & (df['Gas'] == 'NO2')]
@@ -55,7 +55,8 @@ def generate_coldest_days_html(df):
             get_weight="Temp",  # Use the temperature column as the weight for the heatmap
             radius_pixels=60,  # Adjust the radius to control the area covered by each point
             intensity=1,  # Adjust intensity for visual impact
-            threshold=0.05,  # Minimum threshold for rendering; lower values give a broader heat effect
+            threshold=0.05, # Minimum threshold for rendering; lower values give a broader heat effect
+           
             color_range=[
             [0, 128, 0],  # Blue, cooler
             [50, 205, 50],  # Light blue
@@ -90,7 +91,7 @@ def generate_coldest_days_html(df):
 #df = pd.read_csv('Tallinn40v3.csv')
 #generate_coldest_days_html(df)
 
-def generate_hottest_days(df):
+def generate_hottest_days_html(df):
     # Filter the DataFrame to include only clean NO2 gas data
     df = df[(df['clean_points_flag'] == True) & (df['Gas'] == 'NO2')]
     
@@ -176,7 +177,7 @@ def generate_hottest_days(df):
 
         r.to_html(output_file)
 df = pd.read_csv('Tallinn40v3.csv')
-#generate_hottest_days(df)
+#generate_hottest_days_html(df)
 
 def getHottestDaysText(df):
     df = df[(df['clean_points_flag'] == True) & (df['Gas'] == 'NO2')]
@@ -229,6 +230,7 @@ def getColdestDaysText(df):
 #getColdestDaysText(df)
 def generate_all_days(df):
     # Filter the DataFrame to include only clean NO2 gas data
+
     df = df[(df['clean_points_flag'] == True) & (df['Gas'] == 'NO2')]
     
     # Convert 'Temp' column to numeric
@@ -312,4 +314,56 @@ def generate_all_days(df):
 
         r.to_html(output_file)
 df =  pd.read_csv('Tallinn40v3.csv')
-generate_all_days(df)
+#generate_all_days(df)
+
+#maybe we can add a prompt in asking the user which Gas they would like to measure?
+
+def testing(df):
+    print("IN TESTING")
+    df = df[(df['clean_points_flag'] == True) & (df['Gas'] == 'NO2')]
+
+# Convert 'Temp' column to numeric, coerce errors to NaN
+    df['Temp'] = pd.to_numeric(df['Temp'], errors='coerce')
+
+# Drop rows with NaN values in 'Temp' column
+    df.dropna(subset=['Temp'], inplace=True)
+    df['timestamp'] = pd.to_datetime(df['timestamp'])
+
+# Define the specific hours you want to include
+    specific_hours = [9,10,11,12,13,14,15,16,17]  # Example: 8 AM, 12 PM, 4 PM, 8 PM
+
+    # Filter the DataFrame for the specific hours
+    filtered_df = df[df['timestamp'].dt.hour.isin(specific_hours)]
+
+    # Group by hour and calculate the mean longitude, latitude, and 99th percentile temperature across all days
+    hourly_data_combined = filtered_df.groupby('Hour').agg({'Longitude': 'mean', 'Latitude': 'mean', 'Temp': lambda x: x.quantile(0.99)}).reset_index()
+
+    # Prepare data for Pydeck visualization
+    layer = pdk.Layer(
+        'ScatterplotLayer',
+        hourly_data_combined,
+        get_position='[Longitude, Latitude]',
+        get_radius=30,  # Adjust as needed
+        get_fill_color='[255, 0, 0]',
+        pickable=True,
+        auto_highlight=True,
+    )
+
+    # Set the map view
+    view_state = pdk.ViewState(
+        latitude=hourly_data_combined['Latitude'].mean(),
+        longitude=hourly_data_combined['Longitude'].mean(),
+        zoom=10,
+    )
+
+    # Create the deck
+    r = pdk.Deck(layers=[layer], 
+                 initial_view_state=view_state,
+                map_provider='mapbox',
+                map_style='mapbox://styles/mapbox/streets-v12',
+                api_keys={'mapbox': 'pk.eyJ1IjoicmFtYWRpdHlhNTI0IiwiYSI6ImNrb3NwcTF5NjAzZTIyc252cm9scGhub2QifQ.IF_qMBaHLJeTKcyIVuiBBw'}
+                 )
+    output_file = f'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.html'
+    r.to_html(output_file)
+df =  pd.read_csv('Tallinn40v3.csv')
+testing(df)
