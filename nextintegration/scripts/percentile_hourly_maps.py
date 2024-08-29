@@ -19,7 +19,7 @@ def load_and_clean_data(file_path, lat_col, lon_col, value_col, datetime_col):
     
     return df
 
-def process_time_intervals(df, lat_col, lon_col, value_col, datetime_col, resolution, percentile, start_date, end_date):
+def process_selected_hours(df, lat_col, lon_col, value_col, datetime_col, resolution, percentile, start_date, end_date, selected_hours):
     # Convert start_date and end_date to timezone-aware datetime objects
     start_date = pd.to_datetime(start_date).tz_localize('UTC')
     end_date = pd.to_datetime(end_date).tz_localize('UTC')
@@ -28,38 +28,37 @@ def process_time_intervals(df, lat_col, lon_col, value_col, datetime_col, resolu
     mask = (df['Time'] >= start_date) & (df['Time'] <= end_date)
     df = df.loc[mask]
 
-    # Define the time intervals for filtering
-    time_intervals = {
-        '12am-6am': (pd.Timestamp('00:00:00').time(), pd.Timestamp('06:00:00').time()),
-        '6am-12pm': (pd.Timestamp('06:00:00').time(), pd.Timestamp('12:00:00').time()),
-        '12pm-6pm': (pd.Timestamp('12:00:00').time(), pd.Timestamp('18:00:00').time()),
-        '6pm-12am': (pd.Timestamp('18:00:00').time(), pd.Timestamp('23:59:59').time())
-    }
-
     map_urls = []
 
-    for interval, (start_time, end_time) in time_intervals.items():
-        # Filter data by time interval
-        interval_df = df[(df['Time'].dt.time >= start_time) & (df['Time'].dt.time < end_time)]
-        print(f"Data points in interval {interval}: {len(interval_df)}")
-        
-        if not interval_df.empty:
-            # Calculate H3 indices for each data point in the interval
-            interval_df['h3_index'] = interval_df.apply(lambda row: h3.geo_to_h3(row[lat_col], row[lon_col], resolution), axis=1)
-            
-            # Group data by H3 index and calculate the mean value for the interval
-            h3_grouped = interval_df.groupby('h3_index')[value_col].mean().reset_index()
+    # Combine all selected hours into a single title
+    title = f"hour_{'_'.join(map(str, selected_hours))}_percentile"
 
-            # Calculate the percentile threshold value for the interval
+    for hour in selected_hours:
+        # Convert selected hour to a specific time range (e.g., hour 1 = 01:00:00 - 01:59:59)
+        start_time = pd.Timestamp(f"{hour:02}:00:00").time()
+        end_time = pd.Timestamp(f"{(hour+1) % 24:02}:00:00").time()
+
+        # Filter data by the selected hour
+        hour_df = df[(df['Time'].dt.time >= start_time) & (df['Time'].dt.time < end_time)]
+        print(f"Data points in hour {hour}: {len(hour_df)}")
+        
+        if not hour_df.empty:
+            # Calculate H3 indices for each data point in the selected hour
+            hour_df['h3_index'] = hour_df.apply(lambda row: h3.geo_to_h3(row[lat_col], row[lon_col], resolution), axis=1)
+            
+            # Group data by H3 index and calculate the mean value for the selected hour
+            h3_grouped = hour_df.groupby('h3_index')[value_col].mean().reset_index()
+
+            # Calculate the percentile threshold value for the selected hour
             threshold_value = h3_grouped[value_col].quantile(percentile / 100)
 
             # Assign colors to all data points based on the threshold
             h3_grouped['color'] = h3_grouped[value_col].apply(lambda x: '#FF0000' if x >= threshold_value else '#0000FF')
 
-            # Create the map for the interval
-            center_lat = interval_df[lat_col].mean()
-            center_lon = interval_df[lon_col].mean()
-            map_url = create_hotspot_map(h3_grouped, center_lat, center_lon, value_col, interval)
+            # Create the map for the selected hours
+            center_lat = hour_df[lat_col].mean()
+            center_lon = hour_df[lon_col].mean()
+            map_url = create_hotspot_map(h3_grouped, center_lat, center_lon, value_col, title)
             map_urls.append(map_url)
 
     return map_urls
@@ -80,14 +79,14 @@ def create_hotspot_map(h3_data, center_lat, center_lon, value_col, title):
             tooltip=tooltip_text
         ).add_to(m)
     
-    # Save the map with a title based on the interval in the public directory
+    # Save the map with a title based on the selected hours in the public directory
     map_file = os.path.join('public', f'{title}_hotspot_map.html')
     m.save(map_file)
     print(f"Map for {title} saved as {map_file}")
     
     return map_file
 
-def main(file_path, percentile, start_date, end_date):
+def main(file_path, percentile, start_date, end_date, selected_hours):
     lat_col = 'Latitude'
     lon_col = 'Longitude'
     value_col = 'Temp'
@@ -97,7 +96,7 @@ def main(file_path, percentile, start_date, end_date):
     df = df[df['clean_points_flag'] == True]  # Assuming you have a 'clean_points_flag' column to filter valid data
 
     resolution = 11  # H3 resolution level, adjust as necessary
-    map_urls = process_time_intervals(df, lat_col, lon_col, value_col, datetime_col, resolution, percentile, start_date, end_date)
+    map_urls = process_selected_hours(df, lat_col, lon_col, value_col, datetime_col, resolution, percentile, start_date, end_date, selected_hours)
 
     for url in map_urls:
         print(f"Generated map: {url}")
@@ -107,12 +106,13 @@ if __name__ == "__main__":
     script_dir = os.path.dirname(__file__)
     file_path = os.path.join(script_dir, '..', 'public', 'Tallinn40v3.csv')
     
-    # Check if the date range and percentile arguments were provided
-    if len(sys.argv) > 3:
+    # Check if the date range, percentile, and selected hours arguments were provided
+    if len(sys.argv) > 4:
         percentile = float(sys.argv[1])
         start_date = sys.argv[2]
         end_date = sys.argv[3]
+        selected_hours = list(map(int, sys.argv[4:]))  # Convert hour inputs to integers
     else:
-        raise ValueError("Please provide percentile, start_date, and end_date as arguments.")
+        raise ValueError("Please provide percentile, start_date, end_date, and selected hours as arguments.")
     
-    main(file_path, percentile, start_date, end_date)
+    main(file_path, percentile, start_date, end_date, selected_hours)

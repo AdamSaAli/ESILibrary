@@ -6,7 +6,7 @@ const HotspotPage = () => {
     return (
         <div>
             {/* Include the PercentileThresholding component here */}
-            <PercentileThresholding />
+            
             {/* Then include the HotSpotLayout component */}
             <HotSpotLayout />
         </div>

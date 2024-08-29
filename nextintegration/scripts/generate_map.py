@@ -96,10 +96,11 @@ def main(file_path, date_range):
     print("All maps have been saved.")
 
 if __name__ == "__main__":
+    print('we here in py file')
     # Adjust the file path to be absolute or relative correctly
     script_dir = os.path.dirname(__file__)
     file_path = os.path.join(script_dir, '..', 'public', 'Tallinn40v3.csv')
-    
+    print('we here in py file')
     # Check if the date range argument was provided
     if len(sys.argv) > 2:
         date_range = sys.argv[2]

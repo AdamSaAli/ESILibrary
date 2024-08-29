@@ -1,24 +1,26 @@
-import { PythonShell } from 'python-shell';
+import path from 'path';
+import { exec } from 'child_process';
 
-export default async function handler(req, res) {
-    if (req.method === 'POST') {
-        const { percentile } = req.body;
+export default function handler(req, res) {
+    const { startDate, endDate, percentile } = req.body;
 
-        // Define options for PythonShell
-        let options = {
-            mode: 'text',
-            pythonOptions: ['-u'], // get print results in real-time
-            scriptPath: 'path_to_your_python_script', // Path to your Python script
-            args: [percentile] // Pass the percentile as an argument
-        };
-
-        // Run the Python script
-        PythonShell.run('your_python_script.py', options, function (err, results) {
-            if (err) res.status(500).json({ error: err.message });
-            // results is an array of messages collected during execution
-            res.status(200).json({ data: results });
-        });
-    } else {
-        res.status(405).json({ error: 'Method not allowed' });
+    if (!startDate || !endDate || percentile === undefined) {
+        return res.status(400).json({ error: 'Start date, end date, and percentile are required.' });
     }
+
+    const scriptPath = path.join(process.cwd(), 'scripts', 'percentile_map.py');
+    const csvFilePath = path.join(process.cwd(), 'public', 'Tallinn40v3.csv');
+
+    // Build the command to run the Python script with the provided arguments
+    const command = `python "${scriptPath}" ${percentile} "${startDate}" "${endDate}"`;
+
+    exec(command, (error, stdout, stderr) => {
+        if (error) {
+            console.error(`Error executing script: ${stderr}`);
+            return res.status(500).json({ error: 'Error generating map.' });
+        }
+
+        console.log(`Script output: ${stdout}`);
+        res.status(200).json({ message: 'Map generated successfully.', output: stdout });
+    });
 }
