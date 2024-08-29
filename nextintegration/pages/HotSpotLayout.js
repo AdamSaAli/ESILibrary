@@ -97,26 +97,30 @@ const HotSpotLayout = () => {
     };
 
     return (
-        <div className="container">
-            <div className="header">
-                <h2 className="">HotSpot Detection Methods</h2>
+        <div className="">
+            <div className="">
+                <h2 className="text-center underline">HotSpot Detection Methods</h2>
                 <form onSubmit={handleSubmitIntervalMaps}>
                     <div className="controls">
                         <div>
-                            <label >Select the dates you would like to view</label>
-                            <input type="date" placeholder="Start Date" onChange={(e) => setStartDate(e.target.value)} />
-                            <input type="date" placeholder="End Date" onChange={(e) => setEndDate(e.target.value)} />
+                            <label >Select the dates you would like to view:</label>
+                            <br></br>
+                            <label>From: </label>
+                            <input type="date" className='border-2 border-indigo-600' placeholder="Start Date" onChange={(e) => setStartDate(e.target.value)} />
+                            <label>To: </label>
+                            <input type="date" className='border-2 border-indigo-600' placeholder="End Date" onChange={(e) => setEndDate(e.target.value)} />
                         </div>
                         <div>
-                            <label>Select The Methodology you would like (Z-Score, Percentile, etc.)</label>
-                            <select onChange={handleMethodologyChange}>
+                            <label>Select The Methodology you would like (Z-Score, Percentile): </label>
+                            
+                            <select className='border-2 border-indigo-600' onChange={handleMethodologyChange}>
                                 <option value="Z-Score">Z-Score</option>
                                 <option value="Percentile">Percentile</option>
                             </select>
                         </div>
                         {selectedMethodology === 'Percentile' && (
                             <div>
-                                <label>Enter Percentile (0-100)</label>
+                                <label>Enter Percentile (0-100): </label>
                                 <input
                                     type="number"
                                     value={percentile}
@@ -129,7 +133,7 @@ const HotSpotLayout = () => {
                             </div>
                         )}
                     </div>
-                    <button type="submit">Generate Interval Maps</button>
+                    <button type="submit" className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full'>Generate Interval Maps</button>
                 </form>
             </div>
 
