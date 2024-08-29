@@ -99,11 +99,11 @@ const HotSpotLayout = () => {
     return (
         <div className="container">
             <div className="header">
-                <h2>HotSpot Detection Methods</h2>
+                <h2 className="">HotSpot Detection Methods</h2>
                 <form onSubmit={handleSubmitIntervalMaps}>
                     <div className="controls">
                         <div>
-                            <label>Select the dates you would like to view</label>
+                            <label >Select the dates you would like to view</label>
                             <input type="date" placeholder="Start Date" onChange={(e) => setStartDate(e.target.value)} />
                             <input type="date" placeholder="End Date" onChange={(e) => setEndDate(e.target.value)} />
                         </div>

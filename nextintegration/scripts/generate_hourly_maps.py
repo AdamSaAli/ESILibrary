@@ -4,6 +4,7 @@ import folium
 from scipy import stats
 import sys
 import h3
+
 def load_and_clean_data(file_path, lat_col, lon_col, value_col, datetime_col):
     df = pd.read_csv(file_path, low_memory=False)
     df[lat_col] = pd.to_numeric(df[lat_col], errors='coerce')
@@ -13,7 +14,7 @@ def load_and_clean_data(file_path, lat_col, lon_col, value_col, datetime_col):
     
     # Ensure 'Time' column is created from a datetime column in your CSV
     if datetime_col in df.columns:
-        df['Time'] = pd.to_datetime(df[datetime_col])
+        df['Time'] = pd.to_datetime(df[datetime_col], errors='coerce', utc=True)  # Ensure UTC timezone
     else:
         print(f"Column '{datetime_col}' not found. 'Time' column not created.")
         raise KeyError(f"Column '{datetime_col}' not found in the data.")
@@ -59,7 +60,7 @@ def create_hotspot_map(h3_data, center_lat, center_lon, value_col, title):
     m.save(map_file)
     print(f"Map for {title} saved as {map_file}")
 
-def main(file_path, selected_hours):
+def main(file_path, start_date, end_date, selected_hours):
     lat_col = 'Latitude'
     lon_col = 'Longitude'
     value_col = 'Temp'
@@ -68,10 +69,18 @@ def main(file_path, selected_hours):
     df = load_and_clean_data(file_path, lat_col, lon_col, value_col, datetime_col)
     df = df[df['clean_points_flag'] == True]
 
+    # Convert start_date and end_date to timezone-aware datetime objects
+    start_date = pd.to_datetime(start_date).tz_localize('UTC')
+    end_date = pd.to_datetime(end_date).tz_localize('UTC')
+
+    # Filter DataFrame based on the provided date range
+    mask = (df['Time'] >= start_date) & (df['Time'] <= end_date)
+    df = df.loc[mask]
+
     if selected_hours:
         title = f"hour_{'_'.join(map(str, selected_hours))}"
         filtered_df = df[df['Time'].dt.hour.isin(selected_hours)]
-        print(f"Data points for hours {selected_hours}: {len(filtered_df)}")
+        print(f"Data points for hours {selected_hours} within the date range: {len(filtered_df)}")
         
         if not filtered_df.empty:
             hotspots = calculate_hotspots(filtered_df, lat_col, lon_col, value_col)
@@ -79,21 +88,23 @@ def main(file_path, selected_hours):
             center_lon = filtered_df[lon_col].mean()
             create_hotspot_map(hotspots, center_lat, center_lon, value_col, title)
         else:
-            print(f"No data available for hours {selected_hours}")
+            print(f"No data available for hours {selected_hours} within the specified date range.")
     else:
         print("No valid hours provided.")
 
 if __name__ == "__main__":
-    if len(sys.argv) > 1:
-        input_hours = sys.argv[1].strip()
+    if len(sys.argv) > 3:
+        start_date = sys.argv[1]
+        end_date = sys.argv[2]
+        input_hours = sys.argv[3].strip()
         if input_hours:
             selected_hours = [int(hour.strip()) for hour in input_hours.split(',') if hour.strip()]
             script_dir = os.path.dirname(__file__)
             file_path = os.path.join(script_dir, '..', 'public', 'Tallinn40v3.csv')
-            main(file_path, selected_hours)
+            main(file_path, start_date, end_date, selected_hours)
         else:
             print("Error: No hours provided.")
             sys.exit(1)
     else:
-        print("Error: No hours argument provided.")
+        print("Error: No start_date, end_date, or hours argument provided.")
         sys.exit(1)

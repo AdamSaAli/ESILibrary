@@ -19,7 +19,7 @@ def load_and_clean_data(file_path, lat_col, lon_col, value_col, datetime_col):
     
     return df
 
-def process_selected_hours(df, lat_col, lon_col, value_col, datetime_col, resolution, percentile, start_date, end_date, selected_hours):
+def process_combined_hours(df, lat_col, lon_col, value_col, datetime_col, resolution, percentile, start_date, end_date, selected_hours):
     # Convert start_date and end_date to timezone-aware datetime objects
     start_date = pd.to_datetime(start_date).tz_localize('UTC')
     end_date = pd.to_datetime(end_date).tz_localize('UTC')
@@ -28,40 +28,31 @@ def process_selected_hours(df, lat_col, lon_col, value_col, datetime_col, resolu
     mask = (df['Time'] >= start_date) & (df['Time'] <= end_date)
     df = df.loc[mask]
 
-    map_urls = []
+    # Combine all selected hours into a single DataFrame
+    combined_df = df[df['Time'].dt.hour.isin(selected_hours)]
 
-    # Combine all selected hours into a single title
-    title = f"hour_{'_'.join(map(str, selected_hours))}_percentile"
+    print(f"Data points in combined hours {selected_hours}: {len(combined_df)}")
+    
+    if not combined_df.empty:
+        # Calculate H3 indices for each data point in the combined data
+        combined_df['h3_index'] = combined_df.apply(lambda row: h3.geo_to_h3(row[lat_col], row[lon_col], resolution), axis=1)
 
-    for hour in selected_hours:
-        # Convert selected hour to a specific time range (e.g., hour 1 = 01:00:00 - 01:59:59)
-        start_time = pd.Timestamp(f"{hour:02}:00:00").time()
-        end_time = pd.Timestamp(f"{(hour+1) % 24:02}:00:00").time()
+        # Group data by H3 index and calculate the mean value for all selected hours combined
+        h3_grouped = combined_df.groupby('h3_index')[value_col].mean().reset_index()
 
-        # Filter data by the selected hour
-        hour_df = df[(df['Time'].dt.time >= start_time) & (df['Time'].dt.time < end_time)]
-        print(f"Data points in hour {hour}: {len(hour_df)}")
-        
-        if not hour_df.empty:
-            # Calculate H3 indices for each data point in the selected hour
-            hour_df['h3_index'] = hour_df.apply(lambda row: h3.geo_to_h3(row[lat_col], row[lon_col], resolution), axis=1)
-            
-            # Group data by H3 index and calculate the mean value for the selected hour
-            h3_grouped = hour_df.groupby('h3_index')[value_col].mean().reset_index()
+        # Calculate the percentile threshold value for the combined data
+        threshold_value = h3_grouped[value_col].quantile(percentile / 100)
 
-            # Calculate the percentile threshold value for the selected hour
-            threshold_value = h3_grouped[value_col].quantile(percentile / 100)
+        # Assign colors to all data points based on the combined threshold
+        h3_grouped['color'] = h3_grouped[value_col].apply(lambda x: '#FF0000' if x >= threshold_value else '#0000FF')
 
-            # Assign colors to all data points based on the threshold
-            h3_grouped['color'] = h3_grouped[value_col].apply(lambda x: '#FF0000' if x >= threshold_value else '#0000FF')
+        # Create a single map for the combined hours
+        center_lat = combined_df[lat_col].mean()
+        center_lon = combined_df[lon_col].mean()
+        map_url = create_hotspot_map(h3_grouped, center_lat, center_lon, value_col, f"hour_{'_'.join(map(str, selected_hours))}_percentile")
+        return [map_url]
 
-            # Create the map for the selected hours
-            center_lat = hour_df[lat_col].mean()
-            center_lon = hour_df[lon_col].mean()
-            map_url = create_hotspot_map(h3_grouped, center_lat, center_lon, value_col, title)
-            map_urls.append(map_url)
-
-    return map_urls
+    return []
 
 def create_hotspot_map(h3_data, center_lat, center_lon, value_col, title):
     m = folium.Map(location=[center_lat, center_lon], zoom_start=11)
@@ -96,7 +87,7 @@ def main(file_path, percentile, start_date, end_date, selected_hours):
     df = df[df['clean_points_flag'] == True]  # Assuming you have a 'clean_points_flag' column to filter valid data
 
     resolution = 11  # H3 resolution level, adjust as necessary
-    map_urls = process_selected_hours(df, lat_col, lon_col, value_col, datetime_col, resolution, percentile, start_date, end_date, selected_hours)
+    map_urls = process_combined_hours(df, lat_col, lon_col, value_col, datetime_col, resolution, percentile, start_date, end_date, selected_hours)
 
     for url in map_urls:
         print(f"Generated map: {url}")
