@@ -99,15 +99,15 @@ const HotSpotLayout = () => {
     return (
         <div className="">
             <div className="">
-                <h2 className="text-center underline">HotSpot Detection Methods</h2>
+                <h2 className="text-center underline font-bold pb-5">Hot Spot Detection</h2>
                 <form onSubmit={handleSubmitIntervalMaps}>
                     <div className="controls">
                         <div>
                             <label >Select the dates you would like to view:</label>
                             <br></br>
-                            <label>From: </label>
+                            <label className='font-bold'>Start: </label>
                             <input type="date" className='border-2 border-indigo-600' placeholder="Start Date" onChange={(e) => setStartDate(e.target.value)} />
-                            <label>To: </label>
+                            <label className='font-bold'>End: </label>
                             <input type="date" className='border-2 border-indigo-600' placeholder="End Date" onChange={(e) => setEndDate(e.target.value)} />
                         </div>
                         <div>
@@ -129,15 +129,17 @@ const HotSpotLayout = () => {
                                     max="100"
                                     step="0.1"
                                     placeholder="Enter percentile"
+                                    className='w-part p-2 border border-gray-300 rounded text-base'
                                 />
                             </div>
                         )}
                     </div>
                     <button type="submit" className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full'>Generate Interval Maps</button>
+                    {errorMessage && <p className='font-bold text-red-500'>{errorMessage}</p>} 
                 </form>
             </div>
 
-            {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
+            
 
             {intervalMapsVisible && (
                 <>
@@ -146,62 +148,53 @@ const HotSpotLayout = () => {
                     </div>
 
                     <div className="maps">
-                        {/* Display 4 maps for different time intervals */}
-                        <div>
-                            <h4>Time between 12-6 am</h4>
-                            <iframe
-                                key={refreshKey}
-                                className="map-placeholder"
-                                src="/12am-6am_hotspot_map.html"
-                                title="12-6am Hotspot Map"
-                                width="100%"
-                                height="150px"
-                                style={{ border: "none" }}
-                            />
-                        </div>
-                        <div>
-                            <h4>Time between 6-12 pm</h4>
-                            <iframe
-                                key={refreshKey}
-                                className="map-placeholder"
-                                src="/6am-12pm_hotspot_map.html"
-                                title="6-12pm Hotspot Map"
-                                width="100%"
-                                height="150px"
-                                style={{ border: "none" }}
-                            />
-                        </div>
-                        <div>
-                            <h4>Time between 12-6 pm</h4>
-                            <iframe
-                                key={refreshKey}
-                                className="map-placeholder"
-                                src="/12pm-6pm_hotspot_map.html"
-                                title="12-6pm Hotspot Map"
-                                width="100%"
-                                height="150px"
-                                style={{ border: "none" }}
-                            />
-                        </div>
-                        <div>
-                            <h4>Time between 6-12 am</h4>
-                            <iframe
-                                key={refreshKey}
-                                className="map-placeholder"
-                                src="/6pm-12am_hotspot_map.html"
-                                title="6-12am Hotspot Map"
-                                width="100%"
-                                height="150px"
-                                style={{ border: "none" }}
-                            />
-                        </div>
-                    </div>
+    <div className="map-container">
+        <h4>Time between 12-6 am</h4>
+        <iframe
+            key={refreshKey}
+            className="map-placeholder"
+            src="/12am-6am_hotspot_map.html"
+            title="12-6am Hotspot Map"
+        />
+    </div>
+
+    <div className="map-container">
+        <h4>Time between 6-12 pm</h4>
+        <iframe
+            key={refreshKey}
+            className="map-placeholder"
+            src="/6am-12pm_hotspot_map.html"
+            title="6-12pm Hotspot Map"
+        />
+    </div>
+
+    <div className="map-container">
+        <h4>Time between 12-6 pm</h4>
+        <iframe
+            key={refreshKey}
+            className="map-placeholder"
+            src="/12pm-6pm_hotspot_map.html"
+            title="12-6pm Hotspot Map"
+        />
+    </div>
+
+    <div className="map-container">
+        <h4>Time between 6-12 am</h4>
+        <iframe
+            key={refreshKey}
+            className="map-placeholder"
+            src="/6pm-12am_hotspot_map.html"
+            title="6-12am Hotspot Map"
+        />
+    </div>
+</div>
+
 
                     <div className="hour-selector">
-                        <h4>Select specific hours to map</h4>
+                        <h4 className='text-center underline font-bold'>Select specific hours to map</h4>
                         <div className="hours">
                             {Array.from({ length: 24 }).map((_, index) => (
-                                <button key={index} type="button" onClick={() => handleHourClick(index + 1)}>
+                                <button className='bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent m-px rounded-md' key={index} type="button" onClick={() => handleHourClick(index + 1)}>
                                     {selectedHours.includes(index + 1) ? `Hour ${index + 1} (selected)` : `Hour ${index + 1}`}
                                 </button>
                             ))}
@@ -209,7 +202,8 @@ const HotSpotLayout = () => {
                         <div className="selected-hours">
                             <p>Selected Hours: {selectedHours.join(', ')}</p>
                         </div>
-                        <button type="button" onClick={handleSubmitHourlyMaps}>Generate Hourly Maps</button>
+                        {errorMessage && <p className='font-bold text-red-500'>{errorMessage}</p>} 
+                        <button type="button" onClick={handleSubmitHourlyMaps} className='bg-blue-500 p-3 hover:bg-blue-700 rounded-full hover:font-bold text-white'>Generate Hourly Maps</button>
                     </div>
                 </>
             )}
