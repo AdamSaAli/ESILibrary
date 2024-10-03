@@ -3,16 +3,16 @@ import path from 'path';
 
 export default function handler(req, res) {
     const { startDate, endDate } = req.body;
-
+    console.log('Received parameters:', { startDate, endDate });
     if (!startDate || !endDate) {
         return res.status(400).json({ error: 'Start and end dates are required.' });
     }
 
-    const dateRange = `${startDate} to ${endDate}`;
+   
     const scriptPath = path.join(process.cwd(), 'scripts', 'generate_map.py');
     const csvFilePath = path.join(process.cwd(), 'public', 'Tallinn40v3.csv');
 
-    const command = `python "${scriptPath}" "${csvFilePath}" "${dateRange}"`;
+    const command = `python "${scriptPath}" "${startDate}" "${endDate}"`;
 
     exec(command, (error, stdout, stderr) => {
         if (error) {

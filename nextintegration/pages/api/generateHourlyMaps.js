@@ -6,7 +6,7 @@ export default function handler(req, res) {
 
     if (req.method === 'POST') {
         const { selectedHours, startDate, endDate } = req.body;
-
+        console.log(startDate,endDate,'in z score',selectedHours)
         // Validate input
         if (!selectedHours || selectedHours.length === 0) {
             console.log('No hours provided');

@@ -3,7 +3,7 @@ import { exec } from 'child_process';
 
 export default function handler(req, res) {
     const { startDate, endDate, percentile } = req.body;
-
+    console.log('Received parameters:', { startDate, endDate, percentile });
     if (!startDate || !endDate || percentile === undefined) {
         return res.status(400).json({ error: 'Start date, end date, and percentile are required.' });
     }

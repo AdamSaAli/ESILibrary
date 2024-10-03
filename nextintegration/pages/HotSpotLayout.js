@@ -106,14 +106,14 @@ const HotSpotLayout = () => {
                             <label >Select the dates you would like to view:</label>
                             <br></br>
                             <label className='font-bold'>Start: </label>
-                            <input type="date" className='border-2 border-indigo-600' placeholder="Start Date" onChange={(e) => setStartDate(e.target.value)} />
+                            <input type="date" className='border-2 border-black' placeholder="Start Date" onChange={(e) => setStartDate(e.target.value)} />
                             <label className='font-bold'>End: </label>
-                            <input type="date" className='border-2 border-indigo-600' placeholder="End Date" onChange={(e) => setEndDate(e.target.value)} />
+                            <input type="date" className='border-2 border-black' placeholder="End Date" onChange={(e) => setEndDate(e.target.value)} />
                         </div>
                         <div>
                             <label>Select The Methodology you would like (Z-Score, Percentile): </label>
                             
-                            <select className='border-2 border-indigo-600' onChange={handleMethodologyChange}>
+                            <select className='border-2 border-black' onChange={handleMethodologyChange}>
                                 <option value="Z-Score">Z-Score</option>
                                 <option value="Percentile">Percentile</option>
                             </select>
@@ -134,7 +134,7 @@ const HotSpotLayout = () => {
                             </div>
                         )}
                     </div>
-                    <button type="submit" className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full'>Generate Interval Maps</button>
+                    <button type="submit" className='bg-blue-500 hover:bg-blue-700 text-white hover:font-bold py-2 px-4 rounded-full'>Generate Interval Maps</button>
                     {errorMessage && <p className='font-bold text-red-500'>{errorMessage}</p>} 
                 </form>
             </div>
@@ -144,7 +144,7 @@ const HotSpotLayout = () => {
             {intervalMapsVisible && (
                 <>
                     <div className="methodology">
-                        <h3>Methodology: {selectedMethodology}</h3>
+                        <h3 className='text-center  '>Methodology: {selectedMethodology}</h3>
                     </div>
 
                     <div className="maps">
@@ -194,7 +194,7 @@ const HotSpotLayout = () => {
                         <h4 className='text-center underline font-bold'>Select specific hours to map</h4>
                         <div className="hours">
                             {Array.from({ length: 24 }).map((_, index) => (
-                                <button className='bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent m-px rounded-md' key={index} type="button" onClick={() => handleHourClick(index + 1)}>
+                                <button className='bg-white hover:bg-blue-500 text-black-700 font-semibold hover:text-white py-2 px-4 border border-black hover:border-transparent m-px rounded-md' key={index} type="button" onClick={() => handleHourClick(index + 1)}>
                                     {selectedHours.includes(index + 1) ? `Hour ${index + 1} (selected)` : `Hour ${index + 1}`}
                                 </button>
                             ))}
@@ -208,22 +208,19 @@ const HotSpotLayout = () => {
                 </>
             )}
 
-            {hourlyMapsVisible && (
-                <div className="final-map">
-                    <iframe
-                        key={refreshKey}
-                        className="map-placeholder"
-                        src={selectedMethodology === 'Percentile' ? `/hour_${selectedHours.join('_')}_percentile_hotspot_map.html` : `/hour_${selectedHours.join('_')}_hotspot_map.html`}
-                        title="Final Hotspot Map"
-                        width="100%"
-                        height="300px"
-                        style={{ border: "none" }}
-                        onError={(e) => {
-                            e.target.src = '/hotspot_map.html'; // Fallback to default map if specific map is not found
-                        }}
-                    />
-                </div>
-            )}
+{hourlyMapsVisible && (
+    <div className="final-map-container">
+        <iframe
+            key={refreshKey}
+            className="final-map-placeholder"
+            src={selectedMethodology === 'Percentile' ? `/hour_${selectedHours.join('_')}_percentile_hotspot_map.html` : `/hour_${selectedHours.join('_')}_hotspot_map.html`}
+            title="Final Hotspot Map"
+            onError={(e) => {
+                e.target.src = '/hotspot_map.html'; // Fallback to default map if specific map is not found
+            }}
+        />
+    </div>
+)}
         </div>
     );
 };

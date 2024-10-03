@@ -6,7 +6,7 @@ export default function handler(req, res) {
 
     if (req.method === 'POST') {
         const { selectedHours, percentile, startDate, endDate } = req.body;
-
+        console.log(startDate,endDate,'in percentile hourly',selectedHours)
         // Check if all necessary arguments are provided
         if (!selectedHours || selectedHours.length === 0) {
             console.log('No hours provided');
