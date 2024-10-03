@@ -1,28 +1,12 @@
-const unit = document.querySelector('.units')
 
-unit.addEventListener("click",()=>{
-    const dropdownSelect = document.querySelector(".display-unit")
-    //this grabs the div we want to display the text in from the html file
-    const userSelection = document.createElement('span')
-    //This creates a span to display users text
-    userSelection.textContent="You have selected " +unit.nodeValue
-    //We need to be able to get the users text
-    dropdownSelect.appendChild(userSelection)
-    //this adds the span with the text to the div we grabbed earlier
+const optnform = document.querySelector('#frm')
 
-
-    alert("helloworld")
-})
-
-const fo = document.querySelector('#frm')
-
-fo.addEventListener('submit',function(e){
-    const va = document.querySelector('.display-pollutants')
-    va.innerHTML="";
+optnform.addEventListener('submit',function(e){
+    const pollutantDiv = document.querySelector('.display-pollutants')
+    pollutantDiv.innerHTML="";
     let values = []
-
     e.preventDefault();
-    const disp = document.createElement('span')
+    const dispayPollutants = document.createElement('span')
     let checke = document.getElementsByName('pollutant');
     for(let i=0;i<checke.length;i++){
         if(checke[i].checked==true){
@@ -30,23 +14,36 @@ fo.addEventListener('submit',function(e){
         }
         
     }
-    
-    disp.textContent = "The pollutants you have chosen are: " + values.toString()
-    
-    va.appendChild(disp)
-   
+    dispayPollutants.textContent = "The pollutants you have chosen are: " + values.toString()
+    pollutantDiv.appendChild(dispayPollutants)  
 })
-// pollutants.addEventListener("change",()=>{
-//     //I used change here because click doesnt work for checkboxes
+
+const pollutantsform = document.querySelector('#optionform')
+pollutantsform.addEventListener('submit',function(e){
+    const o = document.querySelector(".display-unit")
+    o.innerHTML='';
+    e.preventDefault()
+    const userSelect = document.getElementById('units')
     
-//     const userCheckBox = document.createElement('span')
-//     //This creates a span element to ddisplay the text
-//     const userCheckboxDisplay = document.querySelector(".display-pollutants")
-//     //this grabs the div we want to display the text in from the html file
-//     userCheckBox.textContent="The pollutant(s) you chose are " + pollutants.nodeValue
-//     //Need to make this actually display the users input
-//     //Also need to make it so that if the user unchecks the box it takes it off the screen
-//     userCheckboxDisplay.appendChild(userCheckBox)
-// })
+    const unitText= document.createElement('span')
+    unitText.textContent=userSelect.value
+    o.appendChild(unitText)
 
+    
+})
+const lstform = document.querySelector('#lastform')
+lstform.addEventListener('submit',function(e){
+    e.preventDefault()
+    let date=document.getElementById('dateinp')
+    let w = document.querySelector('.display-date')
+    const ne =docmuent.createElement('span')
+    ne.textContent=date.value
+    w.appendChild(ne)
 
+})
+const displaydate = document.querySelector('.display-date')
+    displaydate.innerHTML=''
+    const uuuu = document.getElementsByClassName('dateinp')
+    const dateText = document.createElement('span')
+    dateText.textContent= uuuu.value()
+    displaydate.appendChild(dateText)
