@@ -4,7 +4,7 @@ import folium
 import h3
 from scipy import stats
 import os
-from bson import ObjectId
+
 def load_and_clean_data(file_path, lat_col, lon_col, value_col, datetime_col):
     df = pd.read_csv(file_path, low_memory=False)
     df[lat_col] = pd.to_numeric(df[lat_col], errors='coerce')
@@ -14,7 +14,7 @@ def load_and_clean_data(file_path, lat_col, lon_col, value_col, datetime_col):
     
     # Create 'Time' column from a datetime column in your CSV
     if datetime_col in df.columns:
-        df['Time'] = pd.to_datetime(df[datetime_col])
+        df['Time'] = pd.to_datetime(df[datetime_col], errors='coerce', utc=True)  # Ensure UTC timezone
     else:
         print(f"Column '{datetime_col}' not found. 'Time' column not created.")
     
@@ -27,7 +27,7 @@ def calculate_hotspots(df, lat_col, lon_col, value_col, resolution=11):
     return h3_grouped
 
 def create_hotspot_map(h3_data, center_lat, center_lon, value_col, title):
-    m = folium.Map(location=[center_lat, center_lon], zoom_start=11)
+    m = folium.Map(location=[center_lat, center_lon], zoom_start=11,scrollWheelZoom=False)
     
     def get_color(z_score):
         if z_score < -2:
@@ -59,14 +59,21 @@ def create_hotspot_map(h3_data, center_lat, center_lon, value_col, title):
     m.save(map_file)
     print(f"Map for {title} saved as {map_file}")
 
-def main(file_path, date_range):
+def main(file_path, start_date, end_date):
     lat_col = 'Latitude'
     lon_col = 'Longitude'
     value_col = 'Temp'
     datetime_col = 'timestamp'  # Replace with the actual column name for datetime
 
     df = load_and_clean_data(file_path, lat_col, lon_col, value_col, datetime_col)
-    df = df[df['clean_points_flag']==True]
+    df = df[df['clean_points_flag'] == True]
+
+    # Convert start_date and end_date to timezone-aware datetime objects
+    start_date = pd.to_datetime(start_date, utc=True)
+    end_date = pd.to_datetime(end_date, utc=True)
+
+    # Filter DataFrame based on the provided date range
+    df = df[(df['Time'] >= start_date) & (df['Time'] <= end_date)]
 
     # Define time intervals
     time_intervals = {
@@ -97,14 +104,12 @@ def main(file_path, date_range):
 
 if __name__ == "__main__":
     print('we here in py file')
-    # Adjust the file path to be absolute or relative correctly
-    script_dir = os.path.dirname(__file__)
-    file_path = os.path.join(script_dir, '..', 'public', 'Tallinn40v3.csv')
-    print('we here in py file')
-    # Check if the date range argument was provided
-    if len(sys.argv) > 2:
-        date_range = sys.argv[2]
-    else:
-        date_range = "default_date_range"  # Provide a default value or handle as needed
     
-    main(file_path, date_range)
+    if len(sys.argv) >2:
+        file_path = os.path.join(os.path.dirname(__file__), '..', 'public', 'Tallinn40v3.csv')
+        start_date = sys.argv[1]
+        end_date = sys.argv[2]
+        main(file_path, start_date, end_date)
+    else:
+        print("Please provide the start date and end date as arguments.")
+        sys.exit(1)

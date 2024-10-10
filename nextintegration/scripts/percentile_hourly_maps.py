@@ -55,7 +55,7 @@ def process_combined_hours(df, lat_col, lon_col, value_col, datetime_col, resolu
     return []
 
 def create_hotspot_map(h3_data, center_lat, center_lon, value_col, title):
-    m = folium.Map(location=[center_lat, center_lon], zoom_start=11)
+    m = folium.Map(location=[center_lat, center_lon], zoom_start=11,scrollWheelZoom=False)
 
     for _, row in h3_data.iterrows():
         hex_boundary = h3.h3_to_geo_boundary(row['h3_index'])

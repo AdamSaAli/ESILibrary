@@ -28,7 +28,7 @@ def calculate_hotspots(df, lat_col, lon_col, value_col, resolution=11):
     return h3_grouped
 
 def create_hotspot_map(h3_data, center_lat, center_lon, value_col, title):
-    m = folium.Map(location=[center_lat, center_lon], zoom_start=11)
+    m = folium.Map(location=[center_lat, center_lon], zoom_start=11,scrollWheelZoom=False)
     
     def get_color(z_score):
         if z_score < -2:
