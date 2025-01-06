@@ -63,9 +63,8 @@ def process_time_intervals(df, lat_col, lon_col, value_col, datetime_col, resolu
             map_urls.append(map_url)
 
     return map_urls
-
 def create_hotspot_map(h3_data, center_lat, center_lon, value_col, title):
-    m = folium.Map(location=[center_lat, center_lon], zoom_start=11)
+    m = folium.Map(location=[center_lat, center_lon], zoom_start=11,scrollWheelZoom=False)
 
     for _, row in h3_data.iterrows():
         hex_boundary = h3.h3_to_geo_boundary(row['h3_index'])
@@ -91,7 +90,7 @@ def main(file_path, percentile, start_date, end_date):
     lat_col = 'Latitude'
     lon_col = 'Longitude'
     value_col = 'Temp'
-    datetime_col = 'timestamp'  # Replace with the actual column name for datetime
+    datetime_col = 'timestamp'  
 
     df = load_and_clean_data(file_path, lat_col, lon_col, value_col, datetime_col)
     df = df[df['clean_points_flag'] == True]  # Assuming you have a 'clean_points_flag' column to filter valid data
