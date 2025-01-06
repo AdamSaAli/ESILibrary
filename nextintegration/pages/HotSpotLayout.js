@@ -36,7 +36,10 @@ const HotSpotLayout = () => {
         }
 
         setErrorMessage('');
-        const endpoint = selectedMethodology === 'Percentile' ? '/api/percentile_thresholding' : '/api/generateMap';
+        const endpoint = 
+            selectedMethodology === 'Percentile' ? '/api/percentile_thresholding' : 
+            selectedMethodology === 'Local Moran\'s I' ? '/api/local_morans' :
+            '/api/generateMap'; // Default to Z-Score
 
         try {
             const intervalResponse = await axios.post(endpoint, {
@@ -69,7 +72,10 @@ const HotSpotLayout = () => {
         setErrorMessage('');
 
         // Determine the correct endpoint for hourly maps based on selected methodology
-        const endpoint = selectedMethodology === 'Percentile' ? '/api/percentile_hourly_map' : '/api/generateHourlyMaps';
+        const endpoint = 
+            selectedMethodology === 'Percentile' ? '/api/percentile_hourly_map' :
+            selectedMethodology === 'Local Moran\'s I' ? '/api/local_morans_hourly' :
+            '/api/generateHourlyMaps'; // Default to Z-Score
 
         try {
             const hourlyResponse = await axios.post(endpoint, {
@@ -111,11 +117,12 @@ const HotSpotLayout = () => {
                             <input type="date" className='border-2 border-black' placeholder="End Date" onChange={(e) => setEndDate(e.target.value)} />
                         </div>
                         <div>
-                            <label>Select The Methodology you would like (Z-Score, Percentile): </label>
+                            <label>Select The Methodology you would like (Z-Score, Percentile, Local Moran's I): </label>
                             
                             <select className='border-2 border-black' onChange={handleMethodologyChange}>
                                 <option value="Z-Score">Z-Score</option>
                                 <option value="Percentile">Percentile</option>
+                                <option value="Local Moran's I">Local Moran's I</option>
                             </select>
                         </div>
                         {selectedMethodology === 'Percentile' && (
@@ -139,8 +146,6 @@ const HotSpotLayout = () => {
                 </form>
             </div>
 
-            
-
             {intervalMapsVisible && (
                 <>
                     <div className="methodology">
@@ -148,47 +153,46 @@ const HotSpotLayout = () => {
                     </div>
 
                     <div className="maps">
-    <div className="map-container">
-        <h4>Time between 12-6 am</h4>
-        <iframe
-            key={refreshKey}
-            className="map-placeholder"
-            src="/12am-6am_hotspot_map.html"
-            title="12-6am Hotspot Map"
-        />
-    </div>
+                        <div className="map-container">
+                            <h4>Time between 12-6 am</h4>
+                            <iframe
+                                key={refreshKey}
+                                className="map-placeholder"
+                                src="/12am-6am_hotspot_map.html"
+                                title="12-6am Hotspot Map"
+                            />
+                        </div>
 
-    <div className="map-container">
-        <h4>Time between 6-12 pm</h4>
-        <iframe
-            key={refreshKey}
-            className="map-placeholder"
-            src="/6am-12pm_hotspot_map.html"
-            title="6-12pm Hotspot Map"
-        />
-    </div>
+                        <div className="map-container">
+                            <h4>Time between 6-12 pm</h4>
+                            <iframe
+                                key={refreshKey}
+                                className="map-placeholder"
+                                src="/6am-12pm_hotspot_map.html"
+                                title="6-12pm Hotspot Map"
+                            />
+                        </div>
 
-    <div className="map-container">
-        <h4>Time between 12-6 pm</h4>
-        <iframe
-            key={refreshKey}
-            className="map-placeholder"
-            src="/12pm-6pm_hotspot_map.html"
-            title="12-6pm Hotspot Map"
-        />
-    </div>
+                        <div className="map-container">
+                            <h4>Time between 12-6 pm</h4>
+                            <iframe
+                                key={refreshKey}
+                                className="map-placeholder"
+                                src="/12pm-6pm_hotspot_map.html"
+                                title="12-6pm Hotspot Map"
+                            />
+                        </div>
 
-    <div className="map-container">
-        <h4>Time between 6-12 am</h4>
-        <iframe
-            key={refreshKey}
-            className="map-placeholder"
-            src="/6pm-12am_hotspot_map.html"
-            title="6-12am Hotspot Map"
-        />
-    </div>
-</div>
-
+                        <div className="map-container">
+                            <h4>Time between 6-12 am</h4>
+                            <iframe
+                                key={refreshKey}
+                                className="map-placeholder"
+                                src="/6pm-12am_hotspot_map.html"
+                                title="6-12am Hotspot Map"
+                            />
+                        </div>
+                    </div>
 
                     <div className="hour-selector">
                         <h4 className='text-center underline font-bold'>Select specific hours to map</h4>
@@ -208,19 +212,24 @@ const HotSpotLayout = () => {
                 </>
             )}
 
-{hourlyMapsVisible && (
-    <div className="final-map-container">
-        <iframe
-            key={refreshKey}
-            className="final-map-placeholder"
-            src={selectedMethodology === 'Percentile' ? `/hour_${selectedHours.join('_')}_percentile_hotspot_map.html` : `/hour_${selectedHours.join('_')}_hotspot_map.html`}
-            title="Final Hotspot Map"
-            onError={(e) => {
-                e.target.src = '/hotspot_map.html'; // Fallback to default map if specific map is not found
-            }}
-        />
-    </div>
-)}
+            {hourlyMapsVisible && (
+                <div className="final-map-container">
+                    <iframe
+                        key={refreshKey}
+                        className="final-map-placeholder"
+                        src={selectedMethodology === 'Percentile'
+                            ? `/hour_${selectedHours.join('_')}_percentile_hotspot_map.html`
+                            : selectedMethodology === 'Local Moran\'s I'
+                            ? `/hour_${selectedHours.join('_')}_local_morans_hotspot_map.html`
+                            : `/hour_${selectedHours.join('_')}_hotspot_map.html`
+                        }
+                        title="Final Hotspot Map"
+                        onError={(e) => {
+                            e.target.src = '/hotspot_map.html'; // Fallback to default map if specific map is not found
+                        }}
+                    />
+                </div>
+            )}
         </div>
     );
 };

@@ -2,26 +2,62 @@
 @tailwind components;
 @tailwind utilities;
 
+html ::-webkit-scrollbar {
+  display: none;
+}
+
+html {
+  background-color: aqua;
+  background-image: linear-gradient(to right, cyan, #90EE90);
+}
 
 .maps {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px; 
-  justify-content: space-between;
+  gap: 10px;
+  justify-content: center; /* Center the grid */
+  background-color: transparent; /* Make the background of the flex container transparent */
 }
 
 .map-container {
-  width: calc(50% - 10px); 
-  box-sizing: border-box; 
+  width: 45%; /* Adjust width to ensure there's space around the container */
+  background-color: white; /* White background for each map container */
+  padding: 15px;
+  box-sizing: border-box;
+  border-radius: 8px; /* Optional: rounded corners */
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* Optional: add a slight shadow */
+}
+
+.map-container img {
+  width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
 }
 
 .map-placeholder {
-  width: 100%; 
-  height: 250px; 
+  width: 100%;
+  height: 250px;
   border: none;
 }
 
 h4 {
-  text-align: center; 
-  margin-bottom: 10px; 
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.final-map-container {
+  width: 60%; /* Adjust width to be different from other maps */
+  background-color: white; /* White background for the final map container */
+  padding: 20px;
+  box-sizing: border-box;
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  margin: 20px auto; /* Center the container horizontally and add space above */
+}
+
+.final-map-placeholder {
+  width: 100%;
+  height: 300px; /* Adjust the height as needed */
+  border: none;
 }
